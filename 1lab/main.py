@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from typing import Optional, List, Set, Dict, Tuple, Any
 from enum import Enum
 
-# ========== Константы и вспомогательные функции ==========
+# Константы и вспомогательные функции
 
 class Color(Enum):
     WHITE = 'white'
@@ -30,7 +30,7 @@ ROOK_DIRS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 BISHOP_DIRS = [(-1, -1), (-1, 1), (1, -1), (1, 1)]
 QUEEN_DIRS = ROOK_DIRS + BISHOP_DIRS
 
-# ========== Позиция ==========
+# Позиция 
 
 @dataclass(frozen=True)
 class Position:
@@ -52,8 +52,7 @@ class Position:
             return Position(int(s[1]) - 1, ord(s[0]) - 97)
         return None
 
-# ========== Ход ==========
-
+# Ход 
 @dataclass
 class Move:
     piece: 'Piece'
@@ -78,8 +77,7 @@ class Move:
         e = ' e.p.' if self.ep_pos else ''
         return f"{ic}{self.frm}{cap}{self.to}{p}{c}{e}"
 
-# ========== Абстрактная фигура ==========
-
+# Абстрактная фигура
 class Piece(ABC):
     value: int = 0
     _sym: str = ''
@@ -148,7 +146,7 @@ class Piece(ABC):
     def __repr__(self) -> str:
         return f"{self.icon()}({self.pos})"
 
-# ========== Конкретные фигуры ==========
+# Конкретные фигуры 
 
 class King(Piece):
     _sym, _name = 'K', 'Король'
@@ -243,8 +241,7 @@ class Pawn(Piece):
                 res.append(p)
         return res
 
-# ========== Дополнительные фигуры для кастомного режима ==========
-
+# Дополнительные фигуры для кастомного режима 
 class Prince(Piece):
     _sym, _name, value = 'C', 'Князь', 8
     
@@ -263,8 +260,7 @@ class Rider(Piece):
     def pseudo_moves(self, board: 'Board') -> List[Position]:
         return self._combined(board, QUEEN_DIRS, KNIGHT_DIRS)
 
-# ========== Доска ==========
-
+# Доска
 class Board:
     def __init__(self):
         self._grid: List[List[Optional[Piece]]] = [[None] * 8 for _ in range(8)]
@@ -374,8 +370,7 @@ class Board:
             self.put(Pawn(WHITE, Position(1, col)))
             self.put(Pawn(BLACK, Position(6, col)))
 
-# ========== Игра ==========
-
+# Игра 
 class Game:
     PROMOTION_MAP = {
         'q': Queen, 'r': Rook, 'b': Bishop, 'n': Knight,
@@ -518,7 +513,7 @@ class Game:
                 isinstance(whites[0], Bishop) and isinstance(blacks[0], Bishop) and
                 (whites[0].pos.row + whites[0].pos.col) % 2 == (blacks[0].pos.row + blacks[0].pos.col) % 2)
 
-# ========== Отображение ==========
+# Отображение
 
 def render(board: Board, moves: Optional[Set[Position]] = None, 
           threats: Optional[List[Piece]] = None, check_king: Optional[King] = None) -> None:
@@ -558,8 +553,7 @@ def render(board: Board, moves: Optional[Set[Position]] = None,
         print(f"  Материал: {'белые' if material_diff > 0 else 'чёрные'} +{abs(material_diff)}")
     print()
 
-# ========== Приложение ==========
-
+# Приложение
 class ChessApp:
     def __init__(self):
         self.game: Optional[Game] = None
